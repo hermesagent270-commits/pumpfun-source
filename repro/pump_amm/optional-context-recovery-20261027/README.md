@@ -45,6 +45,6 @@ python -B repro/pump_amm/optional-context-recovery-20261027/verify_saved.py
 ```
 
 Use `--current-source` to bind maintained AMM files. Result manifest:
-`caf47424343c92b0bf15354c14129b89542062ef5c21316b3f77feaa1af33c38`.
+`a00fa646e610ece0a0ea7f9d202bc7e6526d5a2e310d3881703f7d3c4a7d5cde`.
 
 [Additional evidence and next-step research](followup/README.md) is separately sealed.

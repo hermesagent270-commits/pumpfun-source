@@ -23,7 +23,6 @@
     "provenance/composition.json": "536cad2f8c45430f6b43f3a22821238c5abd60ce7fe23bbe2f92623439c77a69",
     "provenance/recovery.patch": "7a051c7e6f328196711c957b26fcf43622f20f19f2a71f30dc63b8b382e8c01e",
     "provenance/verify_static.py": "d5b7019cd633da744bf4d202facf718dce46257e919589ab9c49d1d381f7223a",
-    "reader/__pycache__/elf_reader.cpython-314.pyc": "e524635ef15486e767707bfd5c2475dba42fe0e107732f5d3a1b54d6a39c7c60",
     "reader/elf_reader.py": "247700e9930d5e53daf93a50888ae1e5429f74ccb19155e7a205f72ee21d5883",
     "results/build/artifacts/pump_amm_recovered.so": "97bd5553c199cd24fb2d07034c365527bee5b138bf5dd7a0aa3099186aad2643",
     "results/build/artifacts/unstripped.so": "0142baeed4ee183435f763fb0d6124fa746196722700f3511c3d2b8375813dca",

@@ -304,7 +304,7 @@
     "owner6048_current_source_origin": "src/collect.rs:20",
     "owner6048_strict_dynamic_compared_assertions": 0,
     "owner6048_original_dynamic_parser_vs_handler_origin": "UNPROVED_RAW_LOGS_NOT_RETAINED",
-    "checkpoint_manifest_sha256": "caf47424343c92b0bf15354c14129b89542062ef5c21316b3f77feaa1af33c38",
+    "checkpoint_manifest_sha256": "a00fa646e610ece0a0ea7f9d202bc7e6526d5a2e310d3881703f7d3c4a7d5cde",
     "normalized_function_matches": 651,
     "raw_function_matches": 148,
     "total_function_windows": 785,
