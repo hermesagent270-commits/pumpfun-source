@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CHECKPOINT = 'repro/pump_amm/optional-context-recovery-20261027'
 ARTIFACT = CHECKPOINT + '/results/build/candidate.so'
 CANDIDATE = '97bd5553c199cd24fb2d07034c365527bee5b138bf5dd7a0aa3099186aad2643'
-MANIFEST = 'caf47424343c92b0bf15354c14129b89542062ef5c21316b3f77feaa1af33c38'
+MANIFEST = 'a00fa646e610ece0a0ea7f9d202bc7e6526d5a2e310d3881703f7d3c4a7d5cde'
 
 
 def sha(path):
@@ -36,9 +36,11 @@ def verify(root=ROOT, runtime=None):
     candidate = root / ARTIFACT
     assert sha(candidate) == CANDIDATE and sha(results / 'manifest.json') == MANIFEST
     if runtime is None:
+        # Capture only stdout: the saved verifier's stderr (its failing
+        # assertion) must stay visible in the caller's log.
         result = subprocess.run(
             [sys.executable, '-B', str(checkpoint / 'verify_saved.py'), '--current-source'],
-            cwd=root, text=True, capture_output=True, check=True,
+            cwd=root, text=True, stdout=subprocess.PIPE, check=True,
         )
         report = json.loads(result.stdout.strip().splitlines()[-1])
         assert report['current_source_checked'] and report['candidate_sha256'] == CANDIDATE
