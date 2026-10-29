@@ -141,6 +141,48 @@ describe('GET /v1/competitions', () => {
       await app.close();
     }
   });
+
+  test('live bucket is ordered by startsAt ascending, not endsAt', async () => {
+    // Contract: live is "startsAt ascending". The earlier start ends last here.
+    const liveCompetition = (id: string, slug: string, startsAt: string, endsAt: string): RawCompetition => ({
+      id,
+      slug,
+      kind: 'person',
+      title: slug,
+      description: slug,
+      prizeCopy: 'No prize',
+      imageUrl: null,
+      prizes: [],
+      registrationOpensAt: '2024-01-01T00:00:00.000Z',
+      registrationClosesAt: endsAt,
+      startsAt,
+      endsAt,
+      minMembers: 1,
+      maxMembers: 1,
+      maxEntries: 10,
+      phase: 'live',
+      isFinal: false,
+      joinable: true,
+      entries: [],
+    });
+    const store = new CompetitionStore([
+      liveCompetition('11111111-1111-4000-8000-0000000000b1', 'starts-later-ends-first', '2024-02-01T00:00:00.000Z', '2024-02-15T00:00:00.000Z'),
+      liveCompetition('11111111-1111-4000-8000-0000000000a1', 'starts-first-ends-last', '2024-01-01T00:00:00.000Z', '2024-03-01T00:00:00.000Z'),
+    ]);
+    const app = buildApp([], { competitionStore: store });
+    try {
+      const res = await app.inject({ method: 'GET', url: '/v1/competitions' });
+      assert.equal(res.statusCode, 200);
+      const json = res.json();
+      assertSchema(json, documentedSchema('/competitions', 'get', 200), 'GET /competitions live order', specRoot);
+      assert.deepEqual(
+        json.live.map((competition: { slug: string }) => competition.slug),
+        ['starts-first-ends-last', 'starts-later-ends-first'],
+      );
+    } finally {
+      await app.close();
+    }
+  });
 });
 
 describe('GET /v1/competitions/:idOrSlug', () => {

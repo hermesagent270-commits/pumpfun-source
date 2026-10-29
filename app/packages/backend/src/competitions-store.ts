@@ -491,10 +491,10 @@ export class CompetitionStore {
       return timeA - timeB;
     });
 
-    // live: endsAt ascending
+    // live: startsAt ascending
     live.sort((a, b) => {
-      const timeA = a.endsAt ? new Date(a.endsAt).getTime() : 0;
-      const timeB = b.endsAt ? new Date(b.endsAt).getTime() : 0;
+      const timeA = a.startsAt ? new Date(a.startsAt).getTime() : 0;
+      const timeB = b.startsAt ? new Date(b.startsAt).getTime() : 0;
       return timeA - timeB;
     });
 

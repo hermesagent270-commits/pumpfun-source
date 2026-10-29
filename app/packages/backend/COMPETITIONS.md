@@ -62,7 +62,7 @@ is a contract decision, not a bug fix.
     `phase: 'registration' | 'live'` -> `live`, `phase: 'ended'` -> `past`) rather than comparing wall-clock
     `Date.now()` to `registrationOpensAt` or `endsAt`. This guarantees identical bucket assignments across runs.
 36. **Bucket ordering in `GET /competitions`**: Within `upcoming`, competitions sort by `startsAt` ascending.
-    Within `live`, competitions sort by `endsAt` ascending. Within `past`, competitions sort by `endsAt`
+    Within `live`, competitions sort by `startsAt` ascending. Within `past`, competitions sort by `endsAt`
     descending, capped at at most 50 items per the contract note.
 37. **Empty bucket representation in `GET /competitions`**: If a bucket has no qualifying competitions,
     it is returned as an empty array `[]` rather than null or omitted, satisfying the required array schemas.
