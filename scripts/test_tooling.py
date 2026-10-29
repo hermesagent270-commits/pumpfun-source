@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """Mutation tests ensuring the byte comparator cannot hide code/padding changes."""
+import contextlib
+import importlib.util
+import io
+import json
+import pathlib
 import tempfile
 import unittest
 from pathlib import Path
 import compare as compare_module
 import struct
+import sys
 import unittest
 from types import SimpleNamespace
 import deep_disassembly
@@ -199,6 +205,41 @@ class SbpfInventoryInputTests(unittest.TestCase):
                 program_inputs(root)[0][1],
                 root / 'evidence/original/pump/deployed.so',
             )
+
+
+def load_window_scorer():
+    path = pathlib.Path(__file__).resolve().parents[1] / 'reconstruction/harness/score.py'
+    spec = importlib.util.spec_from_file_location('window_score', path)
+    module = importlib.util.module_from_spec(spec)
+    # score.py imports its sibling llvm_tools module.
+    with patch('sys.path', [str(path.parent), *sys.path]):
+        spec.loader.exec_module(module)
+    return module
+
+
+class WindowScorerBaselineTests(unittest.TestCase):
+    def run_main(self, scorer, *args):
+        out = io.StringIO()
+        with patch('sys.argv', ['score.py', 'candidate.so', *args]), \
+                contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+            scorer.main()
+        return json.loads(out.getvalue())
+
+    def test_default_baseline_reports_a_lost_window(self):
+        scorer = load_window_scorer()
+        # Window 0x120 is a normalized match in the committed baseline.
+        lost = {0x120: {'normalized': False, 'raw': False, 'symbols': [], 'bytes': 176}}
+        with patch.object(scorer, 'score', return_value=lost), \
+                patch.object(pathlib.Path, 'read_bytes', return_value=b''):
+            summary = self.run_main(scorer)
+        self.assertEqual(summary['losses'], ['0x120'])
+
+    def test_missing_baseline_is_an_error(self):
+        scorer = load_window_scorer()
+        with patch.object(scorer, 'score', side_effect=AssertionError('scored without a baseline')):
+            with self.assertRaises(SystemExit) as exit_:
+                self.run_main(scorer, '--baseline', 'missing/score.json')
+        self.assertEqual(exit_.exception.code, 2)
 
 
 if __name__=='__main__': unittest.main()
