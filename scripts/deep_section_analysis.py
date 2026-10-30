@@ -271,6 +271,8 @@ def analyze_cross_section(elf):
 
     # For each window, find all data references via lddw instructions
     window_data_refs = []
+    all_rodata_refs = collections.Counter()
+    all_data_refs = collections.Counter()
 
     # lddw immediates are virtual addresses, so data-section extents must be
     # compared against the section address (sec[3]), not its file offset
@@ -302,6 +304,10 @@ def analyze_cross_section(elf):
                 elif val > 0:
                     refs["other"].append(hex(val))
 
+        # Count the complete reference stream; the per-window lists below are
+        # bounded presentation samples, not inputs to the frequency census.
+        all_rodata_refs.update(refs["rodata"])
+        all_data_refs.update(refs["data_rel_ro"])
         window_data_refs.append({
             "window_index": idx,
             "address": hex(start),
@@ -316,14 +322,6 @@ def analyze_cross_section(elf):
         })
 
     # Identify heavily-referenced data regions
-    all_rodata_refs = collections.Counter()
-    all_data_refs = collections.Counter()
-    for w in window_data_refs:
-        for addr in w["rodata_addresses"]:
-            all_rodata_refs[addr] += 1
-        for addr in w["data_rel_ro_addresses"]:
-            all_data_refs[addr] += 1
-
     # Data dependency clusters
     clusters = collections.defaultdict(list)
     for w in window_data_refs:

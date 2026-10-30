@@ -36,7 +36,7 @@ remain unchanged through compilation.
   against both in LiteSVM and report per-case results. Most write a `mismatches` list;
   a few use per-row `match` fields instead.
 - `*_surfpool.py` scripts replay the same cases against a local Surfpool validator
-  (`localnet/`). Nothing is sent to a live network.
+  (formerly `localnet/`, removed from the tree). Nothing is sent to a live network.
 - `*_fixture.py` modules build the synthetic accounts shared by a family of
   differentials. The Pump `*_probe.py` scripts record prerequisite observations
   without asserting equality; `fees_donation_crank_probe.py` is a full differential
@@ -45,13 +45,14 @@ remain unchanged through compilation.
 ## Why the set is frozen
 
 The pass-27 CI guard pins this directory: the exact set of 187 `scripts/*.py` files
-and the SHA-256 of each one. Evidence packages under `repro/` also record the
-script hashes they ran with. Editing an existing script needs a reviewed asset
-transition (as in `repro/consolidation/2026-10-26/`) and must not change a script
-that an immutable checkpoint verifier pins (for example `build_partial_candidate.py`).
-Adding, renaming or merging scripts changes the pinned set itself and needs a new
-guard generation. New tooling belongs in the evidence package that uses it, as
-`repro/behavioral-recovery/scripts/` does.
+and the SHA-256 of each one. Evidence packages formerly under `repro/` (removed from
+the tree) also recorded the script hashes they ran with. Editing an existing script
+needs a reviewed asset transition (formerly `repro/consolidation/2026-10-26/`,
+removed from the tree) and must not change a script that an immutable checkpoint
+verifier pins (for example `build_partial_candidate.py`). Adding, renaming or merging
+scripts changes the pinned set itself and needs a new guard generation. New tooling
+belongs in the evidence package that uses it, as the former
+`repro/behavioral-recovery/scripts/` layout did.
 
 ## Core: capture, analysis, comparison
 
