@@ -78,11 +78,7 @@ def elf_layout(b):
     if b[:6]!=b'\x7fELF\x02\x01': raise ValueError('Unsupported ELF identity')
     h=struct.unpack_from('<HHIQQQIHHHHHH',b,16)
     _,machine,_,entry,phoff,shoff,flags,ehsize,phsize,phnum,shsize,shnum,shstr=h
-<<<<<<< HEAD
-    assert (phnum==0 or phsize==56) and shsize==64 and shnum>0
-=======
-    if not (phsize==56 and shsize==64 and shnum>0): raise ValueError('Invalid ELF table layout')
->>>>>>> origin/main
+    if not ((phnum==0 or phsize==56) and shsize==64 and shnum>0): raise ValueError('Invalid ELF table layout')
     raw=[struct.unpack_from('<IIQQQQIIQQ',b,shoff+i*shsize) for i in range(shnum)]
     if shstr >= len(raw): raise ValueError('invalid section-name table index')
     if shstr == 0:

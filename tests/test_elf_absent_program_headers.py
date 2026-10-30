@@ -19,5 +19,5 @@ class Tests(unittest.TestCase):
     def test_no_program_header_table_does_not_require_an_entry_width(self):
         self.assertEqual(subject.elf_layout(elf(0))['elf_extent'], 128)
         self.assertEqual(subject.elf_layout(elf(56))['elf_extent'], 128)
-        with self.assertRaises(AssertionError):
+        with self.assertRaisesRegex(ValueError, 'Invalid ELF table layout'):
             subject.elf_layout(elf(0, 1))
