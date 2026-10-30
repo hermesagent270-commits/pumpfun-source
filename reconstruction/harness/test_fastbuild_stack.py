@@ -131,7 +131,9 @@ class BuildDiagnosticTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             source = root / 'source'
-            source.mkdir()
+            (source / 'src').mkdir(parents=True)
+            (source / 'Cargo.toml').write_text('[package]\nname="synthetic"\nversion="0.0.0"\n')
+            (source / 'Cargo.lock').write_text('version = 3\n')
             (source / 'lib.rs').write_text('// synthetic input\n')
             baseline = root / 'pump-main/baseline'
             baseline.mkdir(parents=True)
